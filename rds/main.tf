@@ -1,5 +1,17 @@
 data "aws_availability_zones" "available" {}
 
+
+resource "random_string" "suffix" {
+  length  = 8
+  special = false
+}
+
+locals {
+  snapshot_name = "${var.cluster_identifier}-db-snapshot-${random_string.suffix.result}"
+  // snapshot_name = "loadtest-eks-${random_string.suffix.result}"
+}
+
+
 resource "aws_db_subnet_group" "default" {
   name       = "rds-db-group"
   subnet_ids = var.db_subnets
@@ -26,7 +38,7 @@ resource "aws_rds_cluster" "rdcluster" {
   backup_retention_period = 5
   preferred_backup_window = "07:00-09:00"
   // skip_final_snapshot       = true
-  final_snapshot_identifier = var.final_snapshot
+  final_snapshot_identifier = local.snapshot_name
 
   snapshot_identifier = var.base_snapshot
 
@@ -92,7 +104,6 @@ variable "dbuser"             {}
 variable "dbpwd"              {}
 
 variable "base_snapshot"      {}
-variable "final_snapshot"     {}
 variable "instance_count"     {}
 variable "instance_class"     {} 
 
