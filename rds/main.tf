@@ -23,7 +23,7 @@ resource "aws_db_subnet_group" "default" {
 }
 
 resource "aws_rds_cluster" "rdcluster" {
-  cluster_identifier      = var.cluster_identifier
+  // cluster_identifier      = var.cluster_identifier
   engine                  = var.engine
   engine_version          = var.engine_version
 
@@ -52,7 +52,7 @@ resource "aws_rds_cluster" "rdcluster" {
 
 resource "aws_rds_cluster_instance" "rdsinst" {
   count               = var.instance_count
-  identifier          = "${var.inst_identifier}-${count.index}"
+  // identifier          = "${var.inst_identifier}-${count.index}"
 
   cluster_identifier  = aws_rds_cluster.rdcluster.id
   engine              = aws_rds_cluster.rdcluster.engine
