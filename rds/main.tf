@@ -50,19 +50,6 @@ resource "aws_rds_cluster" "rdcluster" {
   }
 }
 
-// resource "aws_rds_cluster_instance" "writer" {
-//   cluster_identifier  = aws_rds_cluster.rdcluster.id
-//   identifier          = "rdcluster-writer"
-//   engine              = aws_rds_cluster.rdcluster.engine
-//   engine_version      = aws_rds_cluster.rdcluster.engine_version
-//   // availability_zones  = ["ap-south-1a", "ap-south-1b", "ap-south-1c"]
-//   publicly_accessible = true
-//   apply_immediately   = true
-//   performance_insights_enabled = true
-
-//   instance_class     = "db.r4.large"
-// }
-
 resource "aws_rds_cluster_instance" "rdsinst" {
   count               = var.instance_count
   identifier          = "${var.inst_identifier}-${count.index}"
@@ -71,7 +58,7 @@ resource "aws_rds_cluster_instance" "rdsinst" {
   engine              = aws_rds_cluster.rdcluster.engine
   engine_version      = aws_rds_cluster.rdcluster.engine_version
 
-  availability_zones  = ["ap-south-1a", "ap-south-1b", "ap-south-1c"]
+  availability_zone  = "ap-south-1a"
  //  publicly_accessible = true
 
   apply_immediately   = true
