@@ -150,7 +150,7 @@ resource "aws_dms_replication_task" "task" {
   replication_instance_arn  = "${aws_dms_replication_instance.dmsri.replication_instance_arn}"
   replication_task_id       = "${var.dmf_identifier}-dms-replication-task"
   
-  source_endpoint_arn       = "${aws_dms_endpoint.soure.endpoint_arn}"
+  source_endpoint_arn       = "${aws_dms_endpoint.source.endpoint_arn}"
   target_endpoint_arn       = "${aws_dms_endpoint.dest.endpoint_arn}"
 
   replication_task_settings = <<EOF
