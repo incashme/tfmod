@@ -64,7 +64,27 @@ resource "aws_security_group" "db_jump_access" {
 
   ingress {
     from_port = 5432
-    to_port   = 54322
+    to_port   = 5432
+    protocol  = "tcp"
+    cidr_blocks = [
+      var.jumpbox
+    ]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "redshift_jump_access" {
+  name_prefix = "redshift_jump_access"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    from_port = 5439
+    to_port   = 5439
     protocol  = "tcp"
     cidr_blocks = [
       var.jumpbox
@@ -80,11 +100,12 @@ resource "aws_security_group" "db_jump_access" {
 
 
 
-output "vpc_id"         { value = module.vpc.vpc_id }
-output "sg_ssh_id"      { value = aws_security_group.ssh_access.id }
-output "sg_dbjump_id"   { value = aws_security_group.db_jump_access.id }
+output "vpc_id"                { value = module.vpc.vpc_id }
+output "sg_ssh_id"             { value = aws_security_group.ssh_access.id }
+output "sg_dbjump_id"          { value = aws_security_group.db_jump_access.id }
+output "sg_redshift_jump_id"   { value = aws_security_group.redshift_jump_access.id }
 
-output "public_subnets"     { value = module.vpc.public_subnets }
+output "public_subnets"      { value = module.vpc.public_subnets }
 output "private_subnets"     { value = module.vpc.private_subnets }
 
 

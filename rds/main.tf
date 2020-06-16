@@ -13,11 +13,11 @@ locals {
 
 
 resource "aws_db_subnet_group" "default" {
-  name       = "rds-db-group"
+  name       = "${var.cluster_identifier}-rds-db-group"
   subnet_ids = var.db_subnets
 
   tags = {
-    Name = "${var.cluster_identifier} DB subnet group"
+    name = "DB subnet group"
     environment = var.envt
   }
 }
