@@ -39,14 +39,14 @@ resource "aws_redshift_cluster" "arc" {
 }
 
 output "redshift_endpoint" {
-  value = aws_redshift_cluster_instance.arc.endpoint
+  value = aws_redshift_cluster.arc.endpoint
 }
 
 output "redshift_dns" {
-  value = aws_redshift_cluster_instance.arc.dns_name
+  value = aws_redshift_cluster.arc.dns_name
 }
 output "redshift_port" {
-  value = aws_redshift_cluster_instance.arc.port
+  value = aws_redshift_cluster.arc.port
 }
 
 variable "cluster_identifier" {}
