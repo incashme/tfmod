@@ -13,10 +13,10 @@ locals {
 // subgroup for dms
 
 resource "aws_dms_replication_subnet_group" "default" {
-  name       = "${var.dmf_identifier}-dms-group"
-  description = "dmf subnet group"
-  
-  subnet_ids = var.db_subnets
+  // name       = "${var.dmf_identifier}-dms-group"
+  replication_subnet_group_description = "dmf subnet group"
+
+  replication_subnet_group_id = var.db_subnets[0]
 
   tags = {
     name = "Redshift - RDS DB subnet group"
