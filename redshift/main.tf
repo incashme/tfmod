@@ -24,7 +24,7 @@ resource "aws_redshift_subnet_group" "default" {
 resource "aws_redshift_cluster" "arc" {
 
   cluster_identifier = var.cluster_identifier
-  availability_zones      = data.aws_availability_zones.available.names
+  availability_zone      = data.aws_availability_zones.available.names[0]
 
   database_name           = var.dbname
   master_username         = var.dbuser
