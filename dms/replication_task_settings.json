@@ -83,7 +83,7 @@
   "BeforeImageSettings": {
     "EnableBeforeImage": false,
     "FieldName": "",  
-    "ColumnFilter": pk-only
+    "ColumnFilter": "pk-only"
   },
   "ErrorBehavior": {
     "DataErrorPolicy": "LOG_ERROR",
