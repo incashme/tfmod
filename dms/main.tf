@@ -6,14 +6,16 @@ resource "random_string" "suffix" {
 }
 
 locals {
-  snapshot_name = "${var.cluster_identifier}-redshift-db-snapshot-${random_string.suffix.result}"
+  snapshot_name = "${var.dmf_identifier}-redshift-db-snapshot-${random_string.suffix.result}"
 }
 
 
 // subgroup for dms
 
 resource "aws_dms_replication_subnet_group" "default" {
-  name       = "${var.cluster_identifier}-dms-group"
+  name       = "${var.dmf_identifier}-dms-group"
+  description = "dmf subnet group"
+  
   subnet_ids = var.db_subnets
 
   tags = {
