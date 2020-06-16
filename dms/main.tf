@@ -14,9 +14,10 @@ locals {
 
 resource "aws_dms_replication_subnet_group" "default" {
   // name       = "${var.dmf_identifier}-dms-group"
-  replication_subnet_group_description = "dmf subnet group"
+  replication_subnet_group_description = "${var.dmf_identifier}-dmf subnet group"
+  replication_subnet_group_id          = "${var.dmf_identifier}-dms-replication-subnet-group-tf"
 
-  replication_subnet_group_id = var.db_subnets[0]
+  subnet_ids = var.db_subnets
 
   tags = {
     name = "Redshift - RDS DB subnet group"
