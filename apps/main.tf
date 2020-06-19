@@ -136,5 +136,5 @@ variable "db_write_host"          {}
 
 
 variable "cluster_token"     {}
-variable "cluster_ca"        { type=list(map) }
+variable "cluster_ca"        { type=list(map(string)) }
 variable "cluster_endpoint"  {}
