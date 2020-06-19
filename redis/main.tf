@@ -21,6 +21,12 @@ resource "aws_elasticache_cluster" "redis" {
 
 }
 
+
+output "cluster_address" {
+  value       = aws_elasticache_cluster.redis.cluster_address
+}
+
+
 variable "cluster_id"            {} 
 variable "node_type"             {} 
 variable "num_nodes"             {} 

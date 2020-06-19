@@ -1,0 +1,14 @@
+helm repo add fti 'https://futuretechindustriesllc.github.io/charts'
+helm repo update
+helm install  postgres-read-pgb fti/pgbouncer -f ./values.yaml
+
+
+
+helm uninstall  postgres-read-pgb 
+
+
+cd pgbouncer
+helm install  postgres-read-pgb ./pgbouncer  -f ./values.yaml
+helm install postgres-pgb ./pgbouncer  -f ./values_write.yaml 
+
+https://medium.com/futuretech-industries/gracefully-scaling-to-10k-postgresql-connections-for-35-mo-part-three-3a780eed72cf

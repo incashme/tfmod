@@ -1,0 +1,14 @@
+description: Chart for PGBouncer
+engine: gotpl
+home: https://pgbouncer.github.io
+keywords:
+- postgresql
+- database
+- sql
+maintainers:
+- email: ops@futuretech.industries
+  name: FutureTech Industries
+name: pgbouncer
+sources:
+- https://github.com/clearbit/charts
+version: 0.2.0
