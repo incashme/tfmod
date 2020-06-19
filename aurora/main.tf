@@ -1,7 +1,7 @@
 
 module "aurora" {
   source  = "terraform-aws-modules/rds-aurora/aws"
-  version = "1.6.0"
+  version = "2.19.0"
 
   name                            = var.cluster_identifier
   engine                          = var.engine
@@ -15,7 +15,7 @@ module "aurora" {
   monitoring_interval             = 60
   instance_type                   = var.instance_class
   snapshot_identifier             = var.base_snapshot
-  
+
   apply_immediately               = true
   performance_insights_enabled    = true 
 
