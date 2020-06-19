@@ -92,7 +92,7 @@ resource "kubernetes_service" "redis" {
 
 output "apilb_endpoint" {
   description = "Endpoint for API Loadbalancer"
-  value       = kubernetes_service.portal_api.spec  
+  value       = kubernetes_service.portal_api.load_balancer_ingress.0.hostname
 }
 
 
