@@ -1,16 +1,14 @@
-
-
-// provider "kubectl" {
-//   load_config_file       = false
-//   host                   = "${data.aws_eks_cluster.lt_cluster.endpoint}"
-//   token                  = "${data.aws_eks_cluster.lt_cluster.main.token}"
-//   cluster_ca_certificate = "${base64decode(data.aws_eks_cluster.lt_cluster.certificate_authority.0.data)}"
-// }
-
+provider "kubernetes" {
+  host                   = var.cluster_endpoint
+  cluster_ca_certificate = base64decode(var.cluster_ca.0.data)
+  token                  = var.cluster+_token
+  load_config_file       = false
+  version                = "~> 1.9"
+}
 
 resource "helm_release" "api" {
   name       = "api"
-  repository = "http://incashme-helm.s3-website.ap-south-1.amazonaws.com" 
+  // repository = "http://incashme-helm.s3-website.ap-south-1.ama zonaws.com" 
   repository = "https://incashme.github.io/index.yaml" 
   chart      = "portal-backend"
   version    = var.portal_backend_version
@@ -105,3 +103,8 @@ variable "dbpwd"                  {}
 variable "dbhost"                 {}
 variable "dbname"                 {}
 variable "db_write_host"          {}
+
+
+variable "cluster_token"     {}
+variable "cluster_ca"        {}
+variable "cluster_endpoint"  {}

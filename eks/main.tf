@@ -1,3 +1,7 @@
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.eks.cluster_id
+}
+
 module "eks" {
   source       = "terraform-aws-modules/eks/aws"
   cluster_name = var.cluster_name
@@ -33,6 +37,13 @@ output "kubectl_config" {
   value       = module.eks.kubeconfig
 }
 
+output "cluster_ca" {
+  value = module.eks.cluster_certificate_authority_data
+}
+
+output "cluster_token" {
+  value = data.aws_eks_cluster_auth.cluster.token
+}
 
 
 variable "cluster_name"        {}
