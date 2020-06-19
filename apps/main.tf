@@ -23,10 +23,25 @@ resource "helm_release" "postgres-pgb" {
   values = [
     "${file("pgbouncer/values_write.yaml")}"
   ]
-  set { name  = "username"        value = var.dbuser    }
-  set { name  = "password"        value = var.dbpwd  }
-  set { name  = "host"            value = var.db_write_host    }
-  set { name  = "probes.database" value = var.dbname    }
+  set { 
+    name  = "username"        
+    value = var.dbuser    
+  }
+  
+  set { 
+    name  = "password"
+    value = var.dbpwd  
+  }
+
+  set { 
+    name  = "host"
+    value = var.db_write_host
+  }
+
+  set { 
+    name  = "probes.database" 
+    value = var.dbname    
+  }
 }
 
 resource "helm_release" "postgres-read-pgb" {
@@ -37,11 +52,26 @@ resource "helm_release" "postgres-read-pgb" {
   values = [
     "${file("pgbouncer/values.yaml")}"
   ]
+  set { 
+    name  = "username"        
+    value = var.dbuser    
+  }
+  
+  set { 
+    name  = "password"
+    value = var.dbpwd  
+  }
 
-  set { name  = "username"        value = var.dbuser    }
-  set { name  = "password"        value = var.dbpwd  }
-  set { name  = "host"            value = var.dbhost    }
-  set { name  = "probes.database" value = var.dbname    }
+  set { 
+    name  = "host"
+    value = var.dbhost
+  }
+
+  set { 
+    name  = "probes.database" 
+    value = var.dbname    
+  }
+  
 }
 
 resource "helm_release" "datadog" {
