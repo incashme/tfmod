@@ -1,6 +1,6 @@
 provider "kubernetes" {
   host                   = var.cluster_endpoint
-  cluster_ca_certificate = base64decode(var.cluster_ca.0.data)
+  cluster_ca_certificate = base64decode(var.cluster_ca.data)
   token                  = var.cluster_token
   load_config_file       = false
   version                = "~> 1.9"
