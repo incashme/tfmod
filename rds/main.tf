@@ -28,6 +28,7 @@ resource "aws_rds_cluster" "rdcluster" {
   engine_version          = var.engine_version
 
   // availability_zones      = data.aws_availability_zones.available.names
+  availability_zones      = ["ap-south-1a","ap-south-1b","ap-south-1c"]
   
   db_subnet_group_name    = aws_db_subnet_group.default.id
   vpc_security_group_ids  = var.db_secgrps
@@ -58,7 +59,7 @@ resource "aws_rds_cluster_instance" "rdsinst" {
   engine              = aws_rds_cluster.rdcluster.engine
   engine_version      = aws_rds_cluster.rdcluster.engine_version
 
-  availability_zone  = "ap-south-1a"
+  // availability_zone  = "ap-south-1a"
  //  publicly_accessible = true
 
   apply_immediately   = true
