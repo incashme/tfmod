@@ -1,14 +1,9 @@
 data "aws_availability_zones" "available" {}
 
 
-resource "random_string" "suffix" {
-  length  = 8
-  special = false
-}
-
 locals {
-  snapshot_name = "${var.cluster_identifier}-db-snapshot-${random_string.suffix.result}"
-  // snapshot_name = "loadtest-eks-${random_string.suffix.result}"
+  snapshot_name = "${var.cluster_identifier}-db-snapshot"
+  // snapshot_name = "${var.cluster_identifier}-db-snapshot-${random_string.suffix.result}"
 }
 
 
