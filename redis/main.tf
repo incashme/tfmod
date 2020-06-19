@@ -2,13 +2,6 @@
 resource "aws_elasticache_subnet_group" "redis_subnet" {
   name       = "redis-subnet"
   subnet_ids = var.redis_subnets
-
-
-  tags = {
-    name = "Redis subnet group"
-    environment = var.envt
-  }
-
 }
 
 resource "aws_elasticache_cluster" "redis" {
