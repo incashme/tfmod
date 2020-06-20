@@ -9,7 +9,7 @@ provider "kubernetes" {
 resource "helm_release" "api" {
   name       = "api"
   // repository = "http://incashme-helm.s3-website.ap-south-1.ama zonaws.com" 
-  repository = "https://incashme.github.io/index.yaml" 
+  repository = "https://incashme.github.io" 
   chart      = "portal-backend"
   version    = var.portal_backend_version
 }
@@ -17,8 +17,8 @@ resource "helm_release" "api" {
 
 resource "helm_release" "postgres-pgb" {
   name       = "postgres-pgb"
-  // repository = "./pgbouncer" 
-  chart      = "./pgbouncer"
+  repository = "./pgbouncer" 
+  chart      = "pgbouncer"
 
   values = [
     "${file("pgbouncer/values_write.yaml")}"
@@ -46,8 +46,8 @@ resource "helm_release" "postgres-pgb" {
 
 resource "helm_release" "postgres-read-pgb" {
   name       = "postgres-read-pgb"
-  // repository = "./pgbouncer" 
-  chart      = "./pgbouncer"
+  repository = "./pgbouncer" 
+  chart      = "pgbouncer"
 
   values = [
     "${file("pgbouncer/values.yaml")}"
