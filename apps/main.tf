@@ -6,12 +6,40 @@ provider "kubernetes" {
   version                = "~> 1.9"
 }
 
-resource "helm_release" "api" {
-  name       = "api"
-  // repository = "http://incashme-helm.s3-website.ap-south-1.ama zonaws.com" 
-  repository = "https://incashme.github.io" 
-  chart      = "portal-backend"
-  version    = var.portal_backend_version
+
+resource "kubernetes_service" "portal_api" {
+  metadata {
+    name = "portalback"
+    annotations = {
+        "service.beta.kubernetes.io/aws-load-balancer-backend-protocol" = "http"
+        "service.beta.kubernetes.io/aws-load-balancer-ssl-cert" = "arn:aws:acm:ap-south-1:175714258900:certificate/72335690-60f4-4ae3-8fe6-3c78f4e375be"
+        "service.beta.kubernetes.io/aws-load-balancer-ssl-ports" = "https" 
+    }
+  }
+  spec {
+    selector = {
+      "app.kubernetes.io/name" = "portal-backend"
+      "app.kubernetes.io/instance" = "api"
+    }
+    port {
+      port        = 443
+      target_port = 80
+      name        = "https"
+    }
+    type = "LoadBalancer"
+    external_traffic_policy =  "Local"
+  }
+}
+
+
+resource "kubernetes_service" "redis" {
+  metadata {
+    name = "redis"
+  }
+  spec {
+    external_name = var.redis_cluster
+    type = "ExternalName"
+  }
 }
 
 
@@ -74,6 +102,15 @@ resource "helm_release" "postgres-read-pgb" {
   
 }
 
+resource "helm_release" "api" {
+  name       = "api"
+  // repository = "http://incashme-helm.s3-website.ap-south-1.ama zonaws.com" 
+  repository = "https://incashme.github.io" 
+  chart      = "portal-backend"
+  version    = var.portal_backend_version
+}
+
+
 resource "helm_release" "datadog" {
   name       = "dd"
   repository = "https://kubernetes-charts.storage.googleapis.com/" 
@@ -84,41 +121,6 @@ resource "helm_release" "datadog" {
   ]
 }
 
-
-resource "kubernetes_service" "portal_api" {
-  metadata {
-    name = "portalback"
-    annotations = {
-        "service.beta.kubernetes.io/aws-load-balancer-backend-protocol" = "http"
-        "service.beta.kubernetes.io/aws-load-balancer-ssl-cert" = "arn:aws:acm:ap-south-1:175714258900:certificate/72335690-60f4-4ae3-8fe6-3c78f4e375be"
-        "service.beta.kubernetes.io/aws-load-balancer-ssl-ports" = "https" 
-    }
-  }
-  spec {
-    selector = {
-      "app.kubernetes.io/name" = "portal-backend"
-      "app.kubernetes.io/instance" = "api"
-    }
-    port {
-      port        = 443
-      target_port = 80
-      name        = "https"
-    }
-    type = "LoadBalancer"
-    external_traffic_policy =  "Local"
-  }
-}
-
-
-resource "kubernetes_service" "redis" {
-  metadata {
-    name = "redis"
-  }
-  spec {
-    external_name = var.redis_cluster
-    type = "ExternalName"
-  }
-}
 
 output "apilb_endpoint" {
   description = "Endpoint for API Loadbalancer"
