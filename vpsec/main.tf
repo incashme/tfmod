@@ -129,7 +129,7 @@ output "sg_redis_jump_id"      { value = aws_security_group.redis_jump_access.id
 
 output "public_subnets"      { value = module.vpc.public_subnets }
 output "private_subnets"     { value = module.vpc.private_subnets }
-output "kcluster_name"       { value = var.kcluster_name }
+// output "kcluster_name"       { value = var.kcluster_name }
 
 
 variable "vpc_name"        {}
