@@ -34,7 +34,7 @@ module "eks" {
 
 output "cluster_endpoint" {
   description = "Endpoint for EKS control plane."
-  value       = module.eks.cluster_endpoint
+  value       = data.aws_eks_cluster.cluster.endpoint
 }
 
 output "kubectl_config" {
