@@ -108,7 +108,7 @@ resource "helm_release" "api" {
   name       = "api"
   // repository = "http://incashme-helm.s3-website.ap-south-1.ama zonaws.com" 
   repository = "https://incashme.github.io" 
-  chart      = "portal-backend"
+  chart      = "incapp/portal-backend"
   version    = var.portal_backend_version
   cleanup_on_fail  = true
   timeout          = 600
