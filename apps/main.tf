@@ -128,11 +128,11 @@ output "apilb_endpoint" {
 
 variable "portal_backend_version" {}
 variable "redis_cluster"          {}
-variable "dbuser"                 { type="string" }
-variable "dbpwd"                  { type="string" }
-variable "dbhost"                 { type="string" }
-variable "dbname"                 { type="string" }
-variable "db_write_host"          { type="string" }
+variable "dbuser"                 { type=string }
+variable "dbpwd"                  { type=string }
+variable "dbhost"                 { type=string }
+variable "dbname"                 { type=string }
+variable "db_write_host"          { type=string }
 
 
 variable "cluster_token"     {}
