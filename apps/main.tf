@@ -47,6 +47,7 @@ resource "helm_release" "postgres-pgb" {
   name       = "postgres-pgb"
   repository = "./pgbouncer" 
   chart      = "pgbouncer"
+  cleanup_on_fail  = true
 
   values = [
     "${file("pgbouncer/values_write.yaml")}"
@@ -76,6 +77,7 @@ resource "helm_release" "postgres-read-pgb" {
   name       = "postgres-read-pgb"
   repository = "./pgbouncer" 
   chart      = "pgbouncer"
+  cleanup_on_fail  = true
 
   values = [
     "${file("pgbouncer/values.yaml")}"
@@ -108,6 +110,8 @@ resource "helm_release" "api" {
   repository = "https://incashme.github.io" 
   chart      = "portal-backend"
   version    = var.portal_backend_version
+  cleanup_on_fail  = true
+  timeout          = 600
 }
 
 
