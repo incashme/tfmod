@@ -55,7 +55,7 @@ resource "helm_release" "postgres-pgb" {
   cleanup_on_fail  = true
 
   values = [
-    "${file("pgbouncer/values_write.yaml")}"
+    "${file("./pgbouncer/values_write.yaml")}"
   ]
   set { 
     name  = "username"        
@@ -85,7 +85,7 @@ resource "helm_release" "postgres-read-pgb" {
   cleanup_on_fail  = true
 
   values = [
-    "${file("pgbouncer/values.yaml")}"
+    "${file("./pgbouncer/values.yaml")}"
   ]
   set { 
     name  = "username"        
