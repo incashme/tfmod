@@ -98,6 +98,9 @@ output "node_groups" {
   value       = module.eks.node_groups
 }
 
+output "cluster_token" {
+  value = data.aws_eks_cluster_auth.cluster.token
+}
 
 variable "cluster_name"        {}
 variable "eks_vpc_id"          {}
