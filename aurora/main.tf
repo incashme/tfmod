@@ -51,14 +51,14 @@ resource "aws_security_group" "app_servers" {
   vpc_id      = var.vpc_id
 }
 
-resource "aws_security_group_rule" "allow_access" {
-  type                     = "ingress"
-  from_port                = module.aurora.this_rds_cluster_port
-  to_port                  = module.aurora.this_rds_cluster_port
-  protocol                 = "tcp"
-  source_security_group_id = aws_security_group.app_servers.id
-  security_group_id        = module.aurora.this_security_group_id
-}
+// resource "aws_security_group_rule" "allow_access" {
+//   type                     = "ingress"
+//   from_port                = module.aurora.this_rds_cluster_port
+//   to_port                  = module.aurora.this_rds_cluster_port
+//   protocol                 = "tcp"
+//   source_security_group_id = aws_security_group.app_servers.id
+//   security_group_id        = module.aurora.this_security_group_id
+// }
 
 
 output "rds_cluster_endpoint" {
