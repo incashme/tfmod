@@ -75,7 +75,7 @@ module "eks" {
 
 resource "local_file" "kubec" {
     content     = module.eks.kubeconfig
-    filename = "${path.module}/kubc.yaml"
+    filename = "/tmp/kubc.yaml"
 }
 
 output "cluster_endpoint" {
