@@ -73,6 +73,11 @@ module "eks" {
   map_users    = var.map_users
 }
 
+resource "local_file" "kubec" {
+    content     = module.eks.kubeconfig
+    filename = "${path.module}/kubc.yaml"
+}
+
 output "cluster_endpoint" {
   description = "Endpoint for EKS control plane."
   value       = module.eks.cluster_endpoint
@@ -106,6 +111,9 @@ output "cluster_ca" {
   value = data.aws_eks_cluster.cluster.certificate_authority
 }
 
+output "kubefile"{
+  value = local_file.kubec.filename
+}
 
 variable "cluster_name"        {}
 variable "eks_vpc_id"          {}

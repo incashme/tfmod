@@ -6,6 +6,11 @@ provider "kubernetes" {
   version                = "~> 1.9"
 }
 
+provider "helm" {
+  kubernetes {
+    config_path = var.kubefile
+  }
+}
 
 resource "kubernetes_service" "portal_api" {
   metadata {
@@ -144,3 +149,4 @@ variable "db_write_host"          { type=string }
 variable "cluster_token"     {}
 variable "cluster_ca"        { type=list(map(string)) }
 variable "cluster_endpoint"  {}
+variable "kubefile"          {} 
