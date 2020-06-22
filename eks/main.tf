@@ -102,6 +102,11 @@ output "cluster_token" {
   value = data.aws_eks_cluster_auth.cluster.token
 }
 
+output "cluster_ca" {
+  value = data.aws_eks_cluster.cluster.certificate_authority
+}
+
+
 variable "cluster_name"        {}
 variable "eks_vpc_id"          {}
 variable "worker_group_name"   {}
