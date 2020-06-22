@@ -1,173 +1,106 @@
-data "aws_eks_cluster_auth" "cluster" {
-  name = aws_eks_cluster.aws_eks.name
+provider "local" {
+  version = "~> 1.2"
+}
+
+provider "null" {
+  version = "~> 2.1"
+}
+
+provider "template" {
+  version = "~> 2.1"
 }
 
 data "aws_eks_cluster" "cluster" {
-  name = aws_eks_cluster.aws_eks.name
+  name = module.eks.cluster_id
 }
 
-resource "aws_iam_role" "eks_cluster" {
-  name = "${var.cluster_name}-ekscluster-role"
-
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "eks.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-POLICY
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.eks.cluster_id
 }
 
-resource "aws_iam_role_policy_attachment" "AmazonEKSClusterPolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.eks_cluster.name
+provider "kubernetes" {
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+  load_config_file       = false
+  version                = "~> 1.11"
 }
 
-resource "aws_iam_role_policy_attachment" "AmazonEKSServicePolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
-  role       = aws_iam_role.eks_cluster.name
+data "aws_availability_zones" "available" {
 }
 
-resource "aws_eks_cluster" "aws_eks" {
-  name     = var.cluster_name
-  role_arn = aws_iam_role.eks_cluster.arn
+locals {
+  cluster_name = "test-eks-${random_string.suffix.result}"
+}
 
-  vpc_config {
-    subnet_ids = var.eks_subnets
-  }
+resource "random_string" "suffix" {
+  length  = 8
+  special = false
+}
 
-  tags = {
-    environment = var.envt
-  }
+module "eks" {
+  source       = "terraform-aws-modules/eks/aws"
+  cluster_name = var.cluster_name
+  subnets      = var.eks_subnets
   
-  depends_on = [
-    aws_iam_role_policy_attachment.AmazonEKSClusterPolicy,
-    aws_iam_role_policy_attachment.AmazonEKSServicePolicy,
-  ]
-}
-
-resource "aws_iam_role" "eks_nodes" {
-  name = "${var.cluster_name}-eksnode-role"
-
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-POLICY
-}
-
-resource "aws_iam_role_policy_attachment" "AmazonEKSWorkerNodePolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = aws_iam_role.eks_nodes.name
-}
-
-resource "aws_iam_role_policy_attachment" "AmazonEKS_CNI_Policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.eks_nodes.name
-}
-
-resource "aws_iam_role_policy_attachment" "AmazonEC2ContainerRegistryReadOnly" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.eks_nodes.name
-}
-
-resource "aws_iam_policy" "scalepolicy" {
-  name        = "${var.cluster_name}-scale-policy"
-  description = "scaling policy for eks groups"
-
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Action": [
-                "autoscaling:DescribeAutoScalingGroups",
-                "autoscaling:DescribeAutoScalingInstances",
-                "autoscaling:DescribeLaunchConfigurations",
-                "autoscaling:DescribeTags",
-                "autoscaling:SetDesiredCapacity",
-                "autoscaling:TerminateInstanceInAutoScalingGroup",
-                "ec2:DescribeLaunchTemplateVersions",
-                "ec2:AttachVolume",
-                "ec2:CreateSnapshot",
-                "ec2:CreateTags",
-                "ec2:CreateVolume",
-                "ec2:DeleteSnapshot",
-                "ec2:DeleteTags",
-                "ec2:DeleteVolume",
-                "ec2:DescribeInstances",
-                "ec2:DescribeSnapshots",
-                "ec2:DescribeTags",
-                "ec2:DescribeVolumes",
-                "ec2:DetachVolume"
-            ],
-            "Resource": "*",
-            "Effect": "Allow"
-        }
-    ]
-}
-EOF
-}
-
-resource "aws_iam_role_policy_attachment" "eks_scaling" {
-  role       = aws_iam_role.eks_nodes.name
-  policy_arn = "${aws_iam_policy.scalepolicy.arn}"
-}
-
-resource "aws_eks_node_group" "node" {
-  cluster_name    = aws_eks_cluster.aws_eks.name
-  node_group_name = var.worker_group_name
-  node_role_arn   = aws_iam_role.eks_nodes.arn
-  subnet_ids      = var.eks_subnets
-  instance_types  = [ var.instance_type ]  
-
-  scaling_config {
-    desired_size =  var.min_count
-    max_size     =  var.max_count
-    min_size     =  var.min_count
+  tags = {
+    Environment = var.envt
   }
 
-  # Ensure that IAM Role permissions are created before and deleted after EKS Node Group handling.
-  # Otherwise, EKS will not be able to properly delete EC2 Instances and Elastic Network Interfaces.
-  depends_on = [
-    aws_iam_role_policy_attachment.AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.AmazonEC2ContainerRegistryReadOnly,
-    aws_iam_role_policy_attachment.eks_scaling,
-  ]
+  vpc_id = var.eks_vpc_id
+
+  node_groups_defaults = {
+    ami_type  = "AL2_x86_64"
+    disk_size = 30
+  }
+
+  node_groups = {
+    nodegroup1 = {
+      desired_capacity = var.min_count
+      max_capacity     = var.min_count
+      min_capacity     = var.min_count
+      instance_type =  var.instance_type
+
+      k8s_labels = {
+        Environment = var.envt
+        name        = var.worker_group_name
+      }
+      
+    }
+  }
+
+  map_roles    = var.map_roles
+  map_users    = var.map_users
 }
 
 output "cluster_endpoint" {
-  value = aws_eks_cluster.aws_eks.endpoint
+  description = "Endpoint for EKS control plane."
+  value       = module.eks.cluster_endpoint
 }
 
-output "cluster_ca" {
-  value = data.aws_eks_cluster.cluster.certificate_authority
+output "cluster_security_group_id" {
+  description = "Security group ids attached to the cluster control plane."
+  value       = module.eks.cluster_security_group_id
 }
 
-output "cluster_token" {
-  value = data.aws_eks_cluster_auth.cluster.token
+output "kubectl_config" {
+  description = "kubectl config as generated by the module."
+  value       = module.eks.kubeconfig
+}
+
+output "config_map_aws_auth" {
+  description = "A kubernetes configuration to authenticate to this EKS cluster."
+  value       = module.eks.config_map_aws_auth
+}
+
+output "node_groups" {
+  description = "Outputs from node groups"
+  value       = module.eks.node_groups
 }
 
 
 variable "cluster_name"        {}
-// variable "eks_vpc_id"          {}
+variable "eks_vpc_id"          {}
 variable "worker_group_name"   {}
 variable "instance_type"       {}
 
@@ -178,3 +111,19 @@ variable "eks_subnets"         { type=list(string) }
 variable "eks_secgroups"       { type=list(string) }
 
 variable "envt"                {}
+
+variable "map_roles"             { 
+    type= list(object({
+        rolearn  = string
+        username = string
+        groups   = list(string)
+    }))
+} 
+
+variable "map_users"             { 
+    type= list(object({
+        userarn  = string
+        username = string
+        groups   = list(string)
+    }))
+} 
