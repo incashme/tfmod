@@ -4,7 +4,7 @@ data "aws_route53_zone" "selected" {
 }
 
 resource "aws_route53_record" "www" {
-  zone_id = "${data.aws_route53_zone.selected.zone_id}"
+  zone_id = data.aws_route53_zone.selected.zone_id
   name    = var.domain
   type    = var.dtype
   ttl     = var.ttl
@@ -15,5 +15,5 @@ variable "zone"    {}
 variable "domain"  {}
 variable "dtype"   {}
 variable "ttl"     {}
-variable "resolv"  {}
+variable "resolv"  { type=list(string) }
 
