@@ -57,7 +57,7 @@ module "eks" {
   node_groups = {
     nodegroup1 = {
       desired_capacity = var.min_count
-      max_capacity     = var.min_count
+      max_capacity     = var.max_count
       min_capacity     = var.min_count
       instance_type =  var.instance_type
 
