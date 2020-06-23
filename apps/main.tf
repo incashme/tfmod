@@ -119,6 +119,14 @@ resource "helm_release" "api" {
   timeout          = 600
 }
 
+resource "helm_release" "metricsserver" {
+  name       = "metrics"
+  repository = "https://kubernetes-charts.storage.googleapis.com/" 
+  chart      = "metrics-server"
+  namespace  = "kube-system"
+  cleanup_on_fail  = true
+  
+}
 
 resource "helm_release" "datadog" {
   name       = "dd"
