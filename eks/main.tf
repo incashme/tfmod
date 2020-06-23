@@ -42,7 +42,7 @@ module "eks" {
   source       = "terraform-aws-modules/eks/aws"
   cluster_name = var.cluster_name
   subnets      = var.eks_subnets
-  
+  cluster_enabled_log_types = ["api"]
   tags = {
     Environment = var.envt
   }
