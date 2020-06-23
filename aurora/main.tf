@@ -45,21 +45,31 @@ resource "aws_rds_cluster_parameter_group" "aurora_cluster_postgres96_parameter_
 ############################
 # Example of security group
 ############################
-resource "aws_security_group" "app_servers" {
-  name        = "app-servers"
-  description = "For application servers"
-  vpc_id      = var.vpc_id
-}
-
-// resource "aws_security_group_rule" "allow_access" {
-//   type                     = "ingress"
-//   from_port                = module.aurora.this_rds_cluster_port
-//   to_port                  = module.aurora.this_rds_cluster_port
-//   protocol                 = "tcp"
-//   source_security_group_id = aws_security_group.app_servers.id
-//   security_group_id        = module.aurora.this_security_group_id
+// resource "aws_security_group" "app_servers" {
+//   name        = "app-servers"
+//   description = "For application servers"
+//   vpc_id      = var.vpc_id
 // }
 
+resource "aws_security_group_rule" "allow_access" {
+  type                     = "ingress"
+  from_port                = module.aurora.this_rds_cluster_port
+  to_port                  = module.aurora.this_rds_cluster_port
+  protocol                 = "tcp"
+  // source_security_group_id = aws_security_group.app_servers.id
+  source_security_group_id = var.eks_secgrp
+  security_group_id        = module.aurora.this_security_group_id
+}
+
+resource "aws_security_group_rule" "allow_access2" {
+  type                     = "ingress"
+  from_port                = module.aurora.this_rds_cluster_port
+  to_port                  = module.aurora.this_rds_cluster_port
+  protocol                 = "tcp"
+  // source_security_group_id = aws_security_group.app_servers.id
+  source_security_group_id = var.eks_worker_secgrp
+  security_group_id        = module.aurora.this_security_group_id
+}
 
 output "rds_cluster_endpoint" {
   description = "The cluster endpoint"
@@ -88,6 +98,8 @@ variable "min_node"           {}
 variable "db_subnets"         { type=list(string) }  
 variable "vpc_id"             {}
 variable "envt"               {} 
+variable "eks_secgrp"         {}
+variable "eks_worker_secgrp"         {}
 
 // variable "db_secgrps"         { type=list(string) }  
 // variable "instance_count"     {}
