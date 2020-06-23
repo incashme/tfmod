@@ -27,6 +27,7 @@ module "aurora" {
   db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.aurora_cluster_postgres96_parameter_group.id
 //   enabled_cloudwatch_logs_exports = ["audit", "error", "general", "slowquery"]
 //   skip_final_snapshot             = true
+  allowed_security_groups = var.db_secgrps
 
 }
 
@@ -101,5 +102,5 @@ variable "envt"               {}
 variable "eks_secgrp"         {}
 variable "eks_worker_secgrp"         {}
 
-// variable "db_secgrps"         { type=list(string) }  
+variable "db_secgrps"         { type=list(string) }  
 // variable "instance_count"     {}

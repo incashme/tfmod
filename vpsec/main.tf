@@ -78,6 +78,26 @@ resource "aws_security_group" "db_jump_access" {
   }
 }
 
+resource "aws_security_group" "db_local_access" {
+  name_prefix = "db_jump_access"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    from_port = 5432
+    to_port   = 5432
+    protocol  = "tcp"
+    cidr_blocks = [
+      10.0.0.0/8
+    ]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_security_group" "redshift_jump_access" {
   name_prefix = "redshift_jump_access"
   vpc_id      = module.vpc.vpc_id
@@ -124,6 +144,7 @@ resource "aws_security_group" "redis_jump_access" {
 output "vpc_id"                { value = module.vpc.vpc_id }
 output "sg_ssh_id"             { value = aws_security_group.ssh_access.id }
 output "sg_dbjump_id"          { value = aws_security_group.db_jump_access.id }
+output "sg_dblocal_id"         { value = aws_security_group.db_local_access.id }
 output "sg_redshift_jump_id"   { value = aws_security_group.redshift_jump_access.id }
 output "sg_redis_jump_id"      { value = aws_security_group.redis_jump_access.id }
 

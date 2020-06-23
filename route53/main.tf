@@ -1,6 +1,6 @@
 data "aws_route53_zone" "selected" {
   name         = var.zone
-  private_zone = true
+  private_zone = false
 }
 
 resource "aws_route53_record" "www" {
