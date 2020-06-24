@@ -49,24 +49,15 @@ module "eks" {
   }
 
   vpc_id = var.eks_vpc_id
+  worker_groups = [
+    {
+      name                 = var.worker_group_name
+      instance_type        = var.instance_type
+      asg_desired_capacity = var.min_count
+      asg_max_size     = var.max_count
+      asg_min_size     = var.min_count
 
-  node_groups_defaults = {
-    ami_type  = "AL2_x86_64"
-    disk_size = 30
-  }
-
-  node_groups = {
-    nodegroup1 = {
-      desired_capacity = var.min_count
-      max_capacity     = var.max_count
-      min_capacity     = var.min_count
-      instance_type =  var.instance_type
-
-      k8s_labels = {
-        Environment = var.envt
-        name        = var.worker_group_name
-      }
-      additional_tags = [
+      tags = [
         {
           "key"                 = "k8s.io/cluster-autoscaler/enabled"
           "propagate_at_launch" = "false"
@@ -79,8 +70,7 @@ module "eks" {
         }
       ]
     }
-  }
-
+  ]
   map_roles    = var.map_roles
   map_users    = var.map_users
 }
