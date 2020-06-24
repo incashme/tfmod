@@ -60,12 +60,12 @@ module "eks" {
       tags = [
         {
           "key"                 = "k8s.io/cluster-autoscaler/enabled"
-          "propagate_at_launch" = "false"
+          "propagate_at_launch" = "true"
           "value"               = "true"
         },
         {
           "key"                 = "k8s.io/cluster-autoscaler/${var.cluster_name}"
-          "propagate_at_launch" = "false"
+          "propagate_at_launch" = "true"
           "value"               = "true"
         }
       ]
