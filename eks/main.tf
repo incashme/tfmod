@@ -56,6 +56,7 @@ module "eks" {
       asg_desired_capacity = var.min_count
       asg_max_size     = var.max_count
       asg_min_size     = var.min_count
+      autoscaling_enabled   = true
       public_ip        = true
       tags = [
         {
