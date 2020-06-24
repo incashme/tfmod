@@ -12,6 +12,7 @@ provider "helm" {
   }
 }
 
+
 resource "kubernetes_service" "portal_api" {
   metadata {
     name = "portalback"
@@ -47,6 +48,20 @@ resource "kubernetes_service" "redis" {
   }
 }
 
+resource "helm_release" "cluster_scaler" {
+  name       = "cluster-autoscaler"
+  repository = "https://kubernetes-charts.storage.googleapis.com/" 
+  chart      = "cluster-autoscaler"
+  cleanup_on_fail  = true
+
+  values = [
+    "${file("${path.module}/cluster-autoscaler-chart-values.yaml")}"
+  ]
+  set { 
+    name  = "autoDiscovery.clusterName"        
+    value = var.cluster_name
+  }
+}
 
 resource "helm_release" "postgres-pgb" {
   name       = "postgres-pgb"
@@ -158,3 +173,4 @@ variable "cluster_token"     {}
 variable "cluster_ca"        { type=list(map(string)) }
 variable "cluster_endpoint"  {}
 variable "kubefile"          {} 
+variable "cluster_name"      {} 
