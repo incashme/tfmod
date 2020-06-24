@@ -56,7 +56,7 @@ module "eks" {
       asg_desired_capacity = var.min_count
       asg_max_size     = var.max_count
       asg_min_size     = var.min_count
-
+      public_ip        = true
       tags = [
         {
           "key"                 = "k8s.io/cluster-autoscaler/enabled"
