@@ -53,6 +53,7 @@ resource "helm_release" "cluster_scaler" {
   repository = "https://kubernetes-charts.storage.googleapis.com/" 
   chart      = "cluster-autoscaler"
   cleanup_on_fail  = true
+  namespace  = "kube-system"
 
   values = [
     "${file("${path.module}/cluster-autoscaler-chart-values.yaml")}"
