@@ -119,6 +119,9 @@ output "cluster_ca" {
 output "kubefile"{
   value = local_file.kubec.filename
 }
+output "cluster_name" {
+  value = var.cluster_name 
+}
 
 variable "cluster_name"        {}
 variable "eks_vpc_id"          {}
