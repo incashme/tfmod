@@ -44,6 +44,8 @@ module "eks" {
   subnets      = var.eks_subnets
   cluster_enabled_log_types = ["api","controllerManager","scheduler","authenticator","audit"]
   enable_irsa  = true 
+  iam_path = "/tf/"
+  
   tags = {
     Environment = var.envt
   }
