@@ -134,6 +134,11 @@ resource "helm_release" "api" {
   version    = var.portal_backend_version
   cleanup_on_fail  = true
   timeout          = 600
+  set { 
+    name  = "autoscaling.minReplicas" 
+    value = var.apipod_count
+  }
+  
 }
 
 resource "helm_release" "metricsserver" {
@@ -176,3 +181,4 @@ variable "cluster_ca"        { type=list(map(string)) }
 variable "cluster_endpoint"  {}
 variable "kubefile"          {} 
 variable "cluster_name"      {} 
+variable "apipod_count"      {} 
