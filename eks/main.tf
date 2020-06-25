@@ -55,7 +55,7 @@ module "eks" {
     {
       name                 = var.worker_group_name
       instance_type        = var.instance_type
-      asg_desired_capacity = var.min_count
+      asg_desired_capacity = var.desired_count
       asg_max_size     = var.max_count
       asg_min_size     = var.min_count
       autoscaling_enabled   = true
@@ -135,6 +135,7 @@ variable "instance_type"       {}
 
 variable "min_count"           {}
 variable "max_count"           {}
+variable "desired_count"       {}
 
 variable "eks_subnets"         { type=list(string) }
 variable "eks_secgroups"       { type=list(string) }
